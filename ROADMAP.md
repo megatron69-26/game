@@ -1,57 +1,67 @@
-# Kế Hoạch Phát Triển (Master Roadmap)
+# KẾ HOẠCH PHÁT TRIỂN CHI TIẾT (MASTER ROADMAP)
 
-Bảng kế hoạch này phân rã các bước thi công game dựa trên Flowchart. Dự án đi theo hướng **100% 3D Tabletop** (Tương tác vật lý Diegetic, không dùng UI 2D).
-
----
-
-## PHẦN 1: SETUP BÀN CHƠI & BỘ BÀI (Init Round)
-*Cốt lõi để tạo ra cảm giác "ngồi đánh bài trong phòng kín".*
-
-| Thành phần | 🧊 3D Models & Assets | 🎬 Animation / Kĩ xảo | 💻 Code Logic |
-| :--- | :--- | :--- | :--- |
-| **Bàn chơi** | Bàn, Ánh sáng đèn trần (Spotlight), Môi trường xung quanh. | Ánh sáng nhấp nháy ngẫu nhiên. Camera rung nhẹ. | `GameManager.gd`: Quản lý State của ván đấu. |
-| **Máy đo máu** | 2 cỗ máy hiện số máu (Player và Dealer) + Màn hình hiện Score. | Nhảy số cuộn (Lerp số). Dây điện tóe lửa khi mất máu. | Cập nhật số liệu hiển thị lên vật thể 3D. |
-| **Cọc bài chung** | Cọc bài úp (Deck), Cọc bài lật (Mộ). Tấm bài lẻ 3D (`Card3D.tscn`).| Lá bài bay từ Cọc chia về tay 2 người. Hiệu ứng tráo bài. | `DeckManager.gd`: Chứa mảng bài. Code rút bài, xào bài ngẫu nhiên. |
-
-## PHẦN 2: LƯỢT NGƯỜI CHƠI - BỐC BÀI & CHỌN HÀNH ĐỘNG
-*Tương tác trực tiếp bằng Raycast 3D.*
-
-| Thành phần | 🧊 3D Models & Assets | 🎬 Animation / Kĩ xảo | 💻 Code Logic |
-| :--- | :--- | :--- | :--- |
-| **Xếp bài** | 5 lá bài lơ lửng ở mép dưới màn hình (tay người chơi). | Khi rê chuột (Hover): Lá bài nhô lên. Click: Bài bay ra giữa bàn. | `PlayerController.gd`: Phóng Raycast 3D để click chọn bài. |
-| **Chốt hạ** | 1 cái "Chuông" (Đổi bài - Discard) và 1 cái "Cần gạt" (Play Hand). | Đập tay vào chuông. Kéo cần gạt đánh cạch. | Kiểm tra bài đang chọn. Trừ lượt Discard hoặc chuyển sang Tính điểm. |
-| **Vật phẩm** | Kính lúp, Lon Bia, Còng Tay, Bao Thuốc... | Cầm lên, sử dụng, vứt ra khỏi bàn. | `ItemManager.gd`: Tác dụng trực tiếp lên Deck (Đốt bài) hoặc nhìn lén. |
-
-## PHẦN 3: TÍNH ĐIỂM POKER & CHỌN ĐẠN (Play Hand -> Inventory)
-*Chuyển từ tính toán sang sát phạt.*
-
-| Thành phần | 🧊 3D Models & Assets | 🎬 Animation / Kĩ xảo | 💻 Code Logic |
-| :--- | :--- | :--- | :--- |
-| **Bộ đếm điểm** | TextMesh nổi giữa bàn hiện: `BASE x MULT = DAMAGE` | Lá bài rực sáng khi tạo thành Combo (Sảnh, Thùng...). | `PokerLogic.gd`: Thuật toán chấm điểm bài. Chốt ra lượng Damage. |
-| **Vali Đạn** | Vali xách tay. Các viên đạn với màu sắc khác nhau. | Vali mở chốt. Người chơi gắp đạn. Băng đạn trên bàn. | Lưu trữ số đạn mang theo từ Shop. Code trừ số lượng đạn khi gắp. |
-| **Khẩu Súng** | Súng Shotgun. | Lấy đạn nhét vào nòng. Lên đạn (Pump) nghe tiếng cạch cạch. | `GunManager.gd`: Nhận sát thương đã tính + Áp dụng nội tại đạn. |
-
-## PHẦN 4: KHAI HOẢ (Aim & Shoot)
-*Sự dứt khoát, bạo lực và hiệu ứng trả giá.*
-
-| Thành phần | 🧊 3D Models & Assets | 🎬 Animation / Kĩ xảo | 💻 Code Logic |
-| :--- | :--- | :--- | :--- |
-| **Mục Tiêu** | Tương tác chĩa súng về phía Dealer hoặc bẻ nòng tự chĩa. | Chuyển động súng chĩa tới lui. | Kiểm tra mục tiêu lựa chọn (Self hay Dealer). |
-| **Hiệu Ứng Bắn** | VFX Tia lửa súng, Particle Khói. | Màn hình rung bần bật, súng giật lùi. Dealer văng ngửa ra sau. | Trừ máu. Gây hiệu ứng (Stun/Poison). Check `HP <= 0`. |
-| **Chết/Gục** | Mesh mặt Dealer bị vỡ. Dây truyền máu đứt. | Gục đầu xuống bàn (Dealer). Màn hình đỏ ngòm, sụp tối (Player). | `GameState.gd`: Quyết định Game Over, Thắng, hay Dọn bài qua lượt. |
-
-## PHẦN 5: LƯỢT AI DEALER (Dealer Turn)
-*Dealer biết chơi bài thay vì nổ súng ngẫu nhiên.*
-
-| Thành phần | 🧊 3D Models & Assets | 🎬 Animation / Kĩ xảo | 💻 Code Logic |
-| :--- | :--- | :--- | :--- |
-| **Bot Đánh Bài** | Bàn tay Dealer. | Tay Dealer bốc bài úp trên bàn lật ngửa ra. | `DealerAI.gd`: Tự đọc 5 lá bài, cố gắng ghép đôi/xảnh. Nếu bài xấu -> Bấm Chuông Discard. |
-| **Bot Dùng Đồ** | Các thao tác gắp đạn, cầm súng giống hệt người chơi. | Lên đạn, chĩa súng, hút thuốc. | Phân tích: Nếu Damage to -> Bắn Player. Damage nhỏ/Đạn hồi máu -> Tự bắn mình. |
+Bản kế hoạch này bám sát 100% Sơ đồ luồng (FLOWCHART.md) và được chia thành các **Đầu việc thi công (Task Breakdown)** cụ thể cho cả 2 vai trò: 🎨 Artist (Bạn - Xếp cảnh/3D) và 💻 Coder (Tôi - Lập trình).
 
 ---
 
-## KẾ HOẠCH TÁC CHIẾN (Sprint Phasing)
-1. **Giai đoạn 1 (Tuần 1):** Làm xong PHẦN 1 & PHẦN 2 (Khởi tạo lá bài 3D, chia bài lơ lửng, tính điểm Poker cơ bản).
-2. **Giai đoạn 2 (Tuần 2):** Làm PHẦN 3 & 4 (Lắp đạn, hiệu ứng súng nổ, trừ máu).
-3. **Giai đoạn 3 (Tuần 3):** Làm PHẦN 5 (Code trí tuệ nhân tạo AI cho Dealer).
-4. **Giai đoạn 4 (Tuần 4):** Đánh bóng (Thêm Particle Khói, âm thanh, ánh sáng chớp tắt).
+## 🌍 PHẦN 1: HỆ THỐNG CỐT LÕI (GLOBAL/AUTOLOAD)
+*Hệ thống chạy ngầm để giữ dữ liệu khi chuyển cảnh giữa Map và Combat.*
+- [ ] 💻 **Tạo `RunManager.gd` (Autoload):** Lưu trữ số Tiền (Chips), Máu tối đa của Player, và Bộ Bài Gốc (Master Deck - để biết bạn đã mua/xoá lá bài nào trong Shop).
+- [ ] 💻 **Tạo `Enums.gd` (Global):** Chứa các định nghĩa trạng thái game (TURN_PLAYER, TURN_DEALER, CALCULATING, SHOOTING).
+
+---
+
+## 🛒 PHẦN 2: SCENE CỬA HÀNG & BẢN ĐỒ (`Shop.tscn`)
+*(Tương ứng Node: `Shop` trên Flowchart)*
+- [ ] 🎨 **Dựng Scene:** Một căn phòng 3D nhỏ hoặc màn hình sau cốp xe. Có quầy trưng bày Đạn (Bullets) và Vật Phẩm (Items).
+- [ ] 🎨 **Tạo Text/UI 3D:** Hiển thị giá tiền của từng món đồ và số Tiền Player đang có.
+- [ ] 💻 **Code `ShopManager.gd`:** Lập trình hệ thống click vào đồ vật 3D để Mua (Trừ tiền, đẩy item vào Inventory ở `RunManager`).
+- [ ] 💻 **Chức năng Độ Bài (Deck Builder):** Bỏ tiền để xoá 1 lá bài rác khỏi Master Deck.
+- [ ] 🎨/💻 **Nút "Vào Bàn":** Bấm vào cửa để `get_tree().change_scene_to_file("res://Scenes/BanChoi.tscn")`.
+
+---
+
+## ⚔️ PHẦN 3: SCENE CHIẾN ĐẤU (`BanChoi.tscn`)
+*Chiếm 90% thời lượng game, bám sát các luồng rẽ nhánh trong Flowchart.*
+
+### Module 3.1: Setup Bàn & Khởi tạo (Node `InitRound`)
+- [ ] 🎨 **Dựng Scene:** Đặt bàn, ghế, Dealer, Camera FPS, Máy đo HP.
+- [ ] 💻 **Code `GameManager.gd`:** Lấy dữ liệu từ `RunManager`. Set máu 2 bên.
+- [ ] 💻 **Code `DeckManager.gd`:** Sinh ra (Instantiate) 52 lá bài vật lý. Hàm xào bài (Shuffle). Hàm chia 5 lá lơ lửng trước mặt Player, úp 5 lá trước Dealer.
+
+### Module 3.2: Tương tác Bài 3D (Nodes `ActionP`, `CheckDiscard`, `DiscardCards`)
+- [ ] 🎨 **Scene `Card3D.tscn`:** Root `Area3D`, chứa `MeshInstance3D` (cái thẻ) và `CollisionShape3D`.
+- [ ] 💻 **Code `Card3D.gd`:** Hàm `on_hover` (nhô lên), `on_click` (chọn bài/đổi màu viền).
+- [ ] 🎨 **Nút tương tác:** Tạo Chuông (Discard) và Cần gạt (Play Hand) trên bàn bằng 3D.
+- [ ] 💻 **Code `PlayerController.gd`:** Phóng Raycast 3D để click chuột. Trừ điểm Action khi bấm Chuông (Discard). Vứt bài cũ vào Mộ, bốc bài mới từ Deck.
+
+### Module 3.3: Tính Điểm (Node `CalcScore`)
+- [ ] 🎨 **Máy tính điểm:** TextMesh 3D nổi giữa bàn.
+- [ ] 💻 **Code `PokerLogic.gd`:** Nhận mảng 5 lá bài đang chọn. Thuật toán phân tích bài (Xảnh, Thùng, Đôi...). Trả về kết quả: `Total Score = Base x Mult`. Đẩy số lên máy tính 3D.
+
+### Module 3.4: Kho Đồ & Nạp Đạn (Nodes `UseItem`, `OpenInv`)
+- [ ] 🎨 **Vali Đạn:** Hoạt ảnh mở vali. Chứa các viên đạn màu khác nhau.
+- [ ] 💻 **Code `Inventory.gd`:** Hiển thị các viên đạn/vật phẩm người chơi đã mua từ `Shop`.
+- [ ] 💻 **Tác dụng Item:** Code chức năng cầm Kính lúp xem lén 2 lá đầu của Deck, uống bia để vứt 1 lá bài...
+
+### Module 3.5: Bóp Cò & Trả Giá (Nodes `Aim`, `EffectDealer`, `EffectPlayer`)
+- [ ] 🎨 **Khẩu Shotgun:** Animation lên nòng, chĩa về phía trước (Địch) hoặc chĩa vào mình (Player). VFX Lửa nổ, Khói.
+- [ ] 💻 **Code `GunManager.gd`:** Lấy `Total Score` từ Module 3.3, nhân với Nội tại Đạn (VD: Đạn Rỗng x2, Đạn Độc = Poison).
+- [ ] 💻 **Trừ Máu:** Trừ HP trên máy đếm. Thêm trạng thái (Stun/Choáng).
+
+### Module 3.6: Lượt Dealer AI (Nodes `AIAction`, `AICalcScore`, `AIChooseBullet`)
+- [ ] 🎨 **Animation Dealer:** Tay bốc bài, lật bài, cầm súng, cầm vật phẩm, bị bắn nát mặt.
+- [ ] 💻 **Code `DealerAI.gd`:** 
+    - Đọc bài: Tự ghép Sảnh/Thùng/Đôi. Nếu bài rác -> Discard.
+    - Dùng Item: Biết dùng kính lúp trước khi bốc đạn.
+    - Ra quyết định: Bắn ai? (Dựa trên số Score kiếm được và máu hiện tại).
+
+### Module 3.7: Vòng lặp & Dọn dẹp (Nodes `Cleanup`, `CheckDeath`, `Refresh`)
+- [ ] 💻 **Code Cleanup:** Code hiệu ứng gom các lá bài đã đánh ném vào Mộ (Discard Pile). Lệnh bốc bù lại cho đủ 5 lá.
+- [ ] 💻 **Check Hết Deck:** Nếu `Deck == 0`, lấy toàn bộ bài từ Mộ, gọi lại hàm Shuffle, đặt lại quỹ Discard. Chuyển Lượt (Turn Pass).
+- [ ] 💻 **Check Chết:** Nếu `HP == 0` -> Kích hoạt màn hình End Game. Nếu Player thắng -> Load lại `Shop.tscn`.
+
+---
+
+## ✅ TIÊU CHÍ ĐÁNH GIÁ (Definition of Done)
+Kế hoạch này đã đủ chi tiết đến mức độ **Node-level** (Chỉ rõ dùng Area3D, TextMesh) và **Script-level** (Tên từng file code và hàm cần viết). Chúng ta có thể dùng file này như một Check-list hàng ngày. Đánh dấu `[x]` vào ô nào đã hoàn thành.

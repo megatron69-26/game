@@ -8,6 +8,8 @@ Thay vì nạp đạn thật/giả ngẫu nhiên, người chơi và AI (Dealer)
 ## Tài liệu Thiết kế
 - Xem luồng trò chơi chi tiết tại: [FLOWCHART.md](FLOWCHART.md)
 - Xem logic cơ chế, danh sách đạn và item tại: [GAMEPLAY_LOGIC.md](GAMEPLAY_LOGIC.md)
+- Xem kế hoạch phát triển và checkpoint: [ROADMAP.md](ROADMAP.md)
+- Xem quy tắc phối hợp Human, Codex và Agy: [AI_HANDOVER.md](AI_HANDOVER.md)
 
 ## Các bước tiếp theo để phát triển (Roadmap)
 1. Dựng Greybox (Khối hộp) trên Godot hoặc Unity để test Core Loop.

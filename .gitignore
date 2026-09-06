@@ -1,0 +1,14 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Local AI coordination and generated logs
+AI_COMM/
+*.log
+
+# Imported/generated resources
+.import/
+*.import
+
+# Extracted/proprietary assets are kept locally and are not committed.
+Assets/

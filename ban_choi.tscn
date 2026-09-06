@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://cceawoinlw8hi"]
+
+[ext_resource type="PackedScene" uid="uid://co0jre3256kqa" path="res://Assets/models/tabletop standalone2/tabletop standalone export2.glb" id="2_o1dt5"]
+[ext_resource type="PackedScene" uid="uid://dyx0qluwfu31c" path="res://card_3d.tscn" id="3_1vv6o"]
+[ext_resource type="PackedScene" uid="uid://ccaqucpm10bw5" path="res://Assets/models/playing cards/playing cards.glb" id="6_nyqe8"]
+
+[node name="combat" type="Node3D" unique_id=812047550]
+
+[node name="tabletop standalone export2" parent="." unique_id=393087599 instance=ExtResource("2_o1dt5")]
+
+[node name="playing cards" parent="tabletop standalone export2" unique_id=2013530902 instance=ExtResource("6_nyqe8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46.375854, 8.77301, 19.039185)
+
+[node name="DeckSpawnPoint" type="Marker3D" parent="tabletop standalone export2/playing cards" unique_id=1100523171]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 46.375854, -8.77301, -19.039185)
+
+[node name="Card3D" parent="." unique_id=128398869 instance=ExtResource("3_1vv6o")]

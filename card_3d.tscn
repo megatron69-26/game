@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://dyx0qluwfu31c"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_q2qkr"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jhhka"]
+
+[node name="Card3D" type="Area3D" unique_id=128398869]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=402248711]
+mesh = SubResource("BoxMesh_q2qkr")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=492791965]
+shape = SubResource("BoxShape3D_jhhka")
+debug_color = Color(0.78176534, 0.12456251, 0.9999998, 0.41960785)
